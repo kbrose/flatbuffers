@@ -18,10 +18,17 @@ from .compat import memoryview_type
 
 
 def Get(packer_type, buf, head):
-    """ Get decodes a value at buf[head:] using `packer_type`. """
+    """ Get decodes a value at buf[head] using `packer_type`. """
     return packer_type.unpack_from(memoryview_type(buf), head)[0]
 
 
+def GetVec(packer_type, buf, head):
+    """ GetVec decodes values starting at buf[head] using `packer_type`,
+    where `packer_type` is a vector struct, e.g. struct.Struct('<5B').
+    Unpacks as many elements as are in packer_type. """
+    return packer_type.unpack_from(memoryview_type(buf), head)
+
+
 def Write(packer_type, buf, head, n):
-    """ Write encodes `n` at buf[head:] using `packer_type`. """
+    """ Write encodes `n` at buf[head] using `packer_type`. """
     packer_type.pack_into(buf, head, n)

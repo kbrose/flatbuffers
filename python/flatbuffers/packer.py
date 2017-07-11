@@ -40,3 +40,12 @@ float64 = struct.Struct("<d")
 uoffset = uint32
 soffset = int32
 voffset = uint16
+
+def vectorize_packer(packer, n):
+    if len(packer.format) > 2:
+        raise NotImplementedError() # placeholder for now...
+    if packer.format[0] in '@=<>!':
+        fmt += packer.format[0] + str(n) + packer.format[1]
+    else:
+        fmt += str(n) + packer.format[0]
+    return struct.Struct(fmt)
