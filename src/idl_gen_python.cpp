@@ -274,36 +274,30 @@ static void GetMemberOfVectorOfNonStruct(const StructDef &struct_def,
   code += "\n";
 }
 
-// Get a range of values of a vector's non-struct member.
-// Uses a named return argument to conveniently set the
-// zero value for the result.
-static void GetMembersOfVectorOfNonStruct(const StructDef &struct_def,
-                                         const FieldDef &field,
-                                         std::string *code_ptr) {
+// Returns a non-struct vector as a numpy array. Much faster
+// than iterating over the vector element by element.
+static void GetVectorOfNonStructAsNumpy(const StructDef &struct_def,
+                                        const FieldDef &field,
+                                        std::string *code_ptr) {
   std::string &code = *code_ptr;
   auto vectortype = field.value.type.VectorType();
 
+  // Currently, we only support accessing as numpy array if
+  // the vector type is a scalar.
+  if (!(IsScalar(vectortype.base_type))) {
+    return;
+  }
+
   GenReceiver(struct_def, code_ptr);
-  code += MakeCamel(field.name);
-  code += "VectorizedAccess(self, start, stop=None):";
+  code += MakeCamel(field.name) + "AsNumpy(self):";
   code += OffsetPrefix(field);
+
   code += Indent + Indent + Indent + "a = self._tab.Vector(o)\n";
 
-  code += Indent + Indent + Indent + "stop = (";
-  code += MakeCamel(field.name) + "Length()) if stop is None else stop\n";
-
-  code += Indent + Indent + Indent + "num_elements = stop - start\n";
-
   code += Indent + Indent + Indent;
-  code += "start = flatbuffers.number_types.UOffsetTFlags.py_type(start * ";
+  code += "return " + GenGetter(field.value.type);
+  code += "a + flatbuffers.number_types.UOffsetTFlags.py_type(j * ";
   code += NumToString(InlineSize(vectortype)) + "))\n";
-
-  code += Indent + Indent + Indent + 'vec_packer = vectorize_packer(';
-  code += "flatbuffers.number_types." + MakeCamel(GenTypeGet(field.value.type));
-  code += ".packer_type, num_elements)\n";
-
-  code += Indent + Indent + Indent;
-  code += "return flatbuffers.encode.GetVec(vec_packer, a, start))\n";
   if (vectortype.base_type == BASE_TYPE_STRING) {
     code += Indent + Indent + "return \"\"\n";
   } else {
@@ -478,6 +472,7 @@ static void GenStructAccessor(const StructDef &struct_def,
           GetMemberOfVectorOfStruct(struct_def, field, code_ptr);
         } else {
           GetMemberOfVectorOfNonStruct(struct_def, field, code_ptr);
+          GetVectorOfNonStructAsNumpy(struct_def, field, code_ptr);
         }
         break;
       }

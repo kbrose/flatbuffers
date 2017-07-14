@@ -16,17 +16,20 @@ from . import number_types as N
 from . import packer
 from .compat import memoryview_type
 
+import numpy as np
+
 
 def Get(packer_type, buf, head):
     """ Get decodes a value at buf[head] using `packer_type`. """
     return packer_type.unpack_from(memoryview_type(buf), head)[0]
 
 
-def GetVec(packer_type, buf, head):
-    """ GetVec decodes values starting at buf[head] using `packer_type`,
-    where `packer_type` is a vector struct, e.g. struct.Struct('<5B').
-    Unpacks as many elements as are in packer_type. """
-    return packer_type.unpack_from(memoryview_type(buf), head)
+def GetVectorAsNumpy(numpy_type, buf, count, offset):
+    """ GetVecAsNumpy decodes values starting at buf[head] as
+    `numpy_type`, where `numpy_type` is a numpy dtype. """
+    # TODO: could set .flags.writeable = False to make users jump through
+    #       hoops before modifying...
+    return np.frombuffer(buf, dtype=numpy_type, count=count, offset=offset)
 
 
 def Write(packer_type, buf, head, n):
