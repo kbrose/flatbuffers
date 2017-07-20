@@ -17,6 +17,7 @@ import struct
 
 from . import packer
 
+# TODO: Acceptable to add numpy as a requirement?
 import numpy as np
 
 # For reference, see:

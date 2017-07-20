@@ -16,6 +16,7 @@ from . import number_types as N
 from . import packer
 from .compat import memoryview_type
 
+# TODO: Acceptable to add numpy as a requirement?
 import numpy as np
 
 
