@@ -13,8 +13,7 @@
 # limitations under the License.
 
 """
-Provide pre-compiled struct packers for encoding and decoding, as well as
-a method to vectorize a pre-compiled packer.
+Provide pre-compiled struct packers for encoding and decoding.
 
 See: https://docs.python.org/2/library/struct.html#format-characters
 """
@@ -41,11 +40,3 @@ float64 = struct.Struct("<d")
 uoffset = uint32
 soffset = int32
 voffset = uint16
-
-def _vectorize_packer(packer, n):
-    if packer.format[0] not in '@=<>!':
-        raise ValueError('Flatbuffers only supports endian-safe data.')
-    if len(packer.format) != 2:
-        raise ValueError('Flatbuffers only supports vectors of scalar types.')
-    fmt = packer.format[0] + str(n) + packer.format[1]
-    return struct.Struct(fmt)
