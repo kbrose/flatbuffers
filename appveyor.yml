@@ -59,5 +59,8 @@ test_script:
   - "cd ..\\.."
 
 artifacts:
-  - path: $(CONFIGURATION)\\flatc.exe
+  - path: $(CONFIGURATION)\flatc.exe
     name: flatc.exe
+  - path: tests\MyGame\*
+    name: MyGame
+    type: zip
