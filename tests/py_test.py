@@ -134,14 +134,6 @@ def CheckReadBuffer(buf, offset):
 
     asserter(monster.Test4Length() == 2)
 
-    # test an array of bools
-
-    asserter(monster.TestarrayofboolsLength() == 3)
-
-    asserter(monster.TestarrayofboolsAsNumpy()[0] == True)
-    asserter(monster.TestarrayofboolsAsNumpy()[0] == False)
-    asserter(monster.TestarrayofboolsAsNumpy()[0] == True)
-
     # create a 'Test' object and populate it:
     test0 = monster.Test4(0)
     asserter(type(test0) is MyGame.Example.Test.Test)
