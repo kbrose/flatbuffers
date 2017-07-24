@@ -130,7 +130,6 @@ def CheckReadBuffer(buf, offset):
         invsum += int(v)
     asserter(invsum == 10)
 
-    print('Testing numpy!')
     asserter(monster.InventoryAsNumpy().sum() == 10)
 
     asserter(monster.Test4Length() == 2)
