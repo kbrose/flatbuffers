@@ -965,6 +965,7 @@ class TestAllCodePathsOfExampleSchema(unittest.TestCase):
         self.assertEqual(0, mon2.Testnestedflatbuffer(0))
         self.assertEqual(2, mon2.Testnestedflatbuffer(1))
         self.assertEqual(4, mon2.Testnestedflatbuffer(2))
+        self.assertEqual([0, 2, 4], mon2.TestnestedflatbufferAsNumpy().tolist())
 
     def test_nondefault_monster_testempty(self):
         b = flatbuffers.Builder(0)

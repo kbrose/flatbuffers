@@ -297,6 +297,7 @@ static void GetVectorOfNonStructAsNumpy(const StructDef &struct_def,
   code += "self._tab.GetVectorAsNumpy(flatbuffers.number_types.";
   code += MakeCamel(GenTypeGet(field.value.type));
   code += "Flags, o)\n";
+
   if (vectortype.base_type == BASE_TYPE_STRING) {
     code += Indent + Indent + "return \"\"\n";
   } else {
