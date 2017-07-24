@@ -16,9 +16,9 @@ import collections
 import struct
 
 from . import packer
+from .compat import import_numpy
 
-# TODO: Acceptable to add numpy as a requirement?
-import numpy as np
+np = import_numpy()
 
 # For reference, see:
 # https://docs.python.org/2/library/ctypes.html#ctypes-fundamental-data-types-2
@@ -175,4 +175,8 @@ def uint64_to_float64(n):
 
 
 def to_numpy_type(number_type):
-    return np.dtype(number_type.name).newbyteorder('<')
+    if np is not None
+        return np.dtype(number_type.name).newbyteorder('<')
+    else:
+        raise RuntimeError(('Numpy could not be imported'
+                            ' - make sure it exists and is installed correctly.'))

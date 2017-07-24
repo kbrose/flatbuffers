@@ -15,10 +15,9 @@
 from . import number_types as N
 from . import packer
 from .compat import memoryview_type
+from .compat import import_numpy
 
-# TODO: Acceptable to add numpy as a requirement?
-import numpy as np
-
+np = import_numpy()
 
 def Get(packer_type, buf, head):
     """ Get decodes a value at buf[head] using `packer_type`. """
@@ -28,9 +27,14 @@ def Get(packer_type, buf, head):
 def GetVectorAsNumpy(numpy_type, buf, count, offset):
     """ GetVecAsNumpy decodes values starting at buf[head] as
     `numpy_type`, where `numpy_type` is a numpy dtype. """
-    # TODO: could set .flags.writeable = False to make users jump through
-    #       hoops before modifying...
-    return np.frombuffer(buf, dtype=numpy_type, count=count, offset=offset)
+    if np is not None:
+        # TODO: could set .flags.writeable = False to make users jump through
+        #       hoops before modifying...
+        return np.frombuffer(buf, dtype=numpy_type, count=count, offset=offset)
+    else:
+        raise RuntimeError(('Numpy could not be imported'
+                            ' - make sure it exists and is installed correctly.'))
+
 
 
 def Write(packer_type, buf, head, n):
