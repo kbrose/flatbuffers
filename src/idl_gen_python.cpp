@@ -292,12 +292,11 @@ static void GetVectorOfNonStructAsNumpy(const StructDef &struct_def,
   code += MakeCamel(field.name) + "AsNumpy(self):";
   code += OffsetPrefix(field);
 
-  code += Indent + Indent + Indent + "a = self._tab.Vector(o)\n";
-
   code += Indent + Indent + Indent;
-  code += "return " + GenGetter(field.value.type);
-  code += "a + flatbuffers.number_types.UOffsetTFlags.py_type(j * ";
-  code += NumToString(InlineSize(vectortype)) + "))\n";
+  code += "return ";
+  code += "self._tab.GetVectorAsNumpy(flatbuffers.number_types.";
+  code += MakeCamel(GenTypeGet(field.value.type));
+  code += "Flags, o)\n";
   if (vectortype.base_type == BASE_TYPE_STRING) {
     code += Indent + Indent + "return \"\"\n";
   } else {
