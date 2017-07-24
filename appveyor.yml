@@ -7,7 +7,9 @@ os: Visual Studio 2015
 environment:
   matrix:
     - CMAKE_VS_VERSION: "10 2010"
+      TEST_ALL: "no"
     - CMAKE_VS_VERSION: "14 2015"
+      TEST_ALL: "no"
 
 platform:
   - x86
@@ -27,16 +29,26 @@ build:
   verbosity: minimal
 
 test_script:
-  - rem "---------------- C++ -----------------"
-  - "%CONFIGURATION%\\flattests.exe"
-  - rem "---------------- Java -----------------"
   - "cd tests"
+  - rem "Building all code"
+  - generate_code.bat -b %CONFIGURATION%
+  - rem "---------------- C++ -----------------"
+  - "cd .."
+  - "%CONFIGURATION%\\flattests.exe"
+  - "cd tests"
+  - rem "---------------- Java -----------------"
   - "java -version"
   - "JavaTest.bat"
   - rem "---------------- JS -----------------"
   - "node --version"
   - "..\\%CONFIGURATION%\\flatc -b -I include_test monster_test.fbs unicode_test.json"
   - "node JavaScriptTest ./monster_test_generated"
+  - rem "-------------- Python ---------------"
+  - "python --version"
+  - "pip --version"
+  - rem "installing flatbuffers python library"
+  - "pip install ../python"
+  - "python py_test.py 0 0 0"
   - rem "---------------- C# -----------------"
   # Have to compile this here rather than in "build" above because AppVeyor only
   # supports building one project??

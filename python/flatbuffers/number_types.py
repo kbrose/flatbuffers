@@ -175,7 +175,7 @@ def uint64_to_float64(n):
 
 
 def to_numpy_type(number_type):
-    if np is not None
+    if np is not None:
         return np.dtype(number_type.name).newbyteorder('<')
     else:
         raise RuntimeError(('Numpy could not be imported'
